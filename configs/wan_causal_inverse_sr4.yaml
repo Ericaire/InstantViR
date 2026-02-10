@@ -1,0 +1,86 @@
+model_name: wan
+generator_name: causal_wan
+# generator_ckpt: "./outputs/wan_causal_inverse_sr4/2025-08-31-02-53-28.783507_seed2774163/checkpoint_model_001000/model.pt"
+#generator_ckpt: "./checkpoints/autoregressive_checkpoint/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_sr4/2025-10-20-12-56-32.318146_seed2241080/checkpoint_model_002000/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_sr4/2025-10-21-06-43-58.146072_seed8942551/checkpoint_model_000800/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_sr4/2025-10-21-16-06-53.206265_seed5716814/checkpoint_model_001500/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_sr4/2025-10-22-01-49-53.989673_seed549746/checkpoint_model_000500/model.pt"
+generator_ckpt: "./outputs/wan_causal_inverse_sr4/2025-10-22-08-35-05.429696_seed4218380/checkpoint_model_000600/model.pt"
+generator_fsdp_wrap_strategy: size
+real_score_fsdp_wrap_strategy: size
+fake_score_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+
+generator_grad:
+  model: true
+real_score_grad:
+  model: false
+fake_score_grad:
+  model: true
+
+denoising_step_list:
+- 1000
+- 757
+- 522
+- 0
+num_train_timestep: 1000
+timestep_shift: 8.0
+real_guidance_scale: 3.5
+generator_task: causal_video
+real_task_type: bidirectional_video
+fake_task_type: bidirectional_video
+denoising_loss_type: flow
+mixed_precision: true
+seed: 0
+wandb_host: WANDB_HOST
+wandb_key: WANDB_KEY
+wandb_entity: tyin
+wandb_project: causvid_inverse
+wandb_name: wan_causal_inverse_sr4
+sharding_strategy: no_shard
+lr: 1.0e-05
+beta1: 0.9
+beta2: 0.999
+
+# 预降质 SR×4 数据集 LMDB（合并后）
+data_path: /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid/data/sr4_predegraded_merged.lmdb
+batch_size: 2
+log_iters: 100
+negative_prompt: 色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走
+dfake_gen_update_ratio: 5
+
+# 生成器输出的 HR latent 形状（保持与WAN默认一致）
+image_or_video_shape:
+- 1
+- 21
+- 16
+- 60
+- 104
+
+output_path: ./outputs/wan_causal_inverse_sr4
+distillation_loss: dmd
+gradient_checkpointing: true
+backward_simulation: false
+num_frame_per_block: 3
+warp_denoising_step: false
+compile_model: false
+
+# ==== 逆问题配置：SR×4 ====
+inverse_problem_type: super_resolution
+downscale_factor: 4
+# measurement_consistency_weight: 0.5
+# measurement_consistency_weight: 1.0
+# measurement_consistency_weight: 1.0
+measurement_consistency_weight: 0.3
+gradient_clip_norm: 1.0
+ema_decay: 0.999
+use_predegraded_dataset: true
+
+# 可选：DMD warmup，前若干步仅做一致性（便于稳定）
+dmd_warmup_steps: 500
+
+# 可选 GT consistency（起步关闭）
+# use_gt_consistency: false
+use_gt_consistency: true
+gt_consistency_space: latent  # 若启用，可选 latent | pixel

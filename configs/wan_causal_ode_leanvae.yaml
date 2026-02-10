@@ -1,0 +1,41 @@
+model_name: causal_wan
+
+# 使用 LeanVAE 作为 VAE（训练阶段不会用到，但推理阶段需要）
+vae_type: leanvae
+
+generator_grad:
+  model: true
+denoising_step_list:
+- 1000
+- 757
+- 522
+- 0
+generator_task: causal_video
+generator_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+mixed_precision: false
+seed: 0
+wandb_host: WANDB_HOST
+wandb_key: WANDB_KEY
+wandb_entity: tyin
+wandb_project: causvid
+wandb_name: wan_causal_ode_leanvae
+sharding_strategy: hybrid_full
+lr: 2.0e-06
+beta1: 0.9
+beta2: 0.999
+data_path: /fs-computility-new/UPDZ02_sunhe/weiminbai/dataset/causvid_ode_lean
+batch_size: 2
+log_iters: 1000
+output_path: ./outputs/wan_causal_ode_leanvae
+distillation_loss: ode
+gradient_checkpointing: true
+num_frame_per_block: 3
+warp_denoising_step: false
+
+# Start from official ODE-pretrain checkpoint (provided by user)
+# generator_ckpt: ./checkpoints/ode/model.pt
+
+# generator_ckpt: ./outputs/wan_causal_ode_leanvae/2025-11-14-03-45-09.152884_seed4120010/checkpoint_model_005800/model.pt
+# generator_ckpt: ./outputs/wan_causal_ode_leanvae/2025-11-14-06-22-41.759202_seed8097368/checkpoint_model_001000/model.pt
+generator_ckpt: ./outputs/wan_causal_ode_leanvae/2025-11-14-07-12-20.585851_seed3207841/checkpoint_model_003000/model.pt

@@ -1,0 +1,81 @@
+model_name: wan
+generator_name: causal_wan
+# 可选：从已有 SR4 检查点微调（建议保留）
+# generator_ckpt: "./outputs/wan_causal_inverse_sr4/2025-10-22-08-35-05.429696_seed4218380/checkpoint_model_000600/model.pt"
+generator_ckpt: "./outputs/wan_causal_inverse_sr4_reds/2025-11-12-12-28-19.339576_seed7011654/checkpoint_model_002000/model.pt"
+generator_fsdp_wrap_strategy: size
+real_score_fsdp_wrap_strategy: size
+fake_score_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+
+generator_grad:
+  model: true
+real_score_grad:
+  model: false
+fake_score_grad:
+  model: true
+
+denoising_step_list:
+- 1000
+- 757
+- 522
+- 0
+num_train_timestep: 1000
+timestep_shift: 8.0
+real_guidance_scale: 3.5
+generator_task: causal_video
+real_task_type: bidirectional_video
+fake_task_type: bidirectional_video
+denoising_loss_type: flow
+mixed_precision: true
+seed: 0
+wandb_host: WANDB_HOST
+wandb_key: WANDB_KEY
+wandb_entity: tyin
+wandb_project: causvid_inverse
+wandb_name: wan_causal_inverse_sr4_reds
+sharding_strategy: no_shard
+lr: 1.0e-05
+beta1: 0.9
+beta2: 0.999
+
+# 预降质 SR×4（REDS，高分辨率）合并 LMDB
+data_path: /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid/data/reds_sr4_predegraded_wan_merged.lmdb
+batch_size: 1  # REDS 分辨率更高，显存更大，默认先用1
+log_iters: 200
+negative_prompt: 色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走
+dfake_gen_update_ratio: 5
+
+# 生成器输出 HR latent 形状，对应 720x1280 像素（/8）
+image_or_video_shape:
+- 1
+- 21
+- 16
+- 90
+- 160
+
+output_path: ./outputs/wan_causal_inverse_sr4_reds
+distillation_loss: dmd
+gradient_checkpointing: true
+backward_simulation: false
+num_frame_per_block: 3
+warp_denoising_step: false
+compile_model: false
+
+# ==== 逆问题配置：SR×4 ====
+inverse_problem_type: super_resolution
+downscale_factor: 4
+measurement_consistency_weight: 0.3
+gradient_clip_norm: 1.0
+ema_decay: 0.999
+use_predegraded_dataset: true
+
+# DMD warmup（前若干步仅做一致性，便于稳定）
+dmd_warmup_steps: 1000
+
+# GT consistency（默认 latent 空间）
+use_gt_consistency: true
+gt_consistency_space: latent  # 可选 latent | pixel
+
+
+

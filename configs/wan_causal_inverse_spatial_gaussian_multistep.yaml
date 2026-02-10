@@ -1,0 +1,112 @@
+model_name: wan
+generator_name: causal_wan
+# generator_ckpt: "./checkpoints/autoregressive_checkpoint/model.pt"
+generator_ckpt: "./outputs/wan_causal_inverse_spatial_gaussian_multistep_chain_v1/2025-12-09-05-00-15.255048_seed1453198/checkpoint_model_003200/model.pt"
+
+generator_fsdp_wrap_strategy: size
+real_score_fsdp_wrap_strategy: size
+fake_score_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+generator_grad:
+  model: true
+real_score_grad:
+  model: false
+fake_score_grad:
+  model: true
+denoising_step_list:
+- 1000
+- 757
+- 522
+- 0
+num_train_timestep: 1000
+timestep_shift: 8.0
+real_guidance_scale: 3.5
+generator_task: causal_video
+real_task_type: bidirectional_video
+fake_task_type: bidirectional_video
+denoising_loss_type: flow
+mixed_precision: true
+seed: 0
+wandb_host: WANDB_HOST
+wandb_key: WANDB_KEY
+wandb_entity: tyin
+wandb_project: causvid_inverse
+wandb_name: wan_causal_inverse_spatial_gaussian_multistep
+sharding_strategy: no_shard
+
+# lr: 5.0e-06
+lr: 1.0e-05
+beta1: 0.9
+beta2: 0.999
+data_path: data/mixkit_latents_spatial_blur_k61_s3_lmdb
+batch_size: 2
+log_iters: 200
+negative_prompt: 色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走
+dfake_gen_update_ratio: 5
+image_or_video_shape:
+- 1
+- 21
+- 16
+- 60
+- 104
+output_path: ./outputs/wan_causal_inverse_spatial_gaussian_multistep_chain_v1
+distillation_loss: dmd
+gradient_checkpointing: true
+backward_simulation: false
+num_frame_per_block: 3
+warp_denoising_step: false
+compile_model: false
+inverse_problem_type: spatial_blur
+blur_kernel_size: 61
+blur_sigma: 3.0
+noise_level: 0.0
+measurement_consistency_weight: 0.5
+# measurement_consistency_weight: 0.2
+# measurement_consistency_weight: 1.0
+
+gradient_clip_norm: 1.0
+ema_decay: 0.999
+use_predegraded_dataset: true
+
+# ==== Optional GT Consistency ====
+# use_gt_consistency: false
+# use_gt_consistency: true
+use_gt_consistency: false
+gt_consistency_space: latent
+
+# ==== Scheme B (chain self-conditioning) ====
+# Run fixed schedule in training: 1000 -> 757 -> 522, each step uses previous output (detach) as input
+inverse_chain_train: true
+# If you want Scheme A instead, set inverse_multi_step_train: true and disable inverse_chain_train
+inverse_multi_step_train: false
+inverse_train_timesteps:
+- 1000
+- 757
+- 522
+
+# ==== Chain regularization & DC schedules (new) ====
+# Per-step measurement consistency weight schedule λ_MC(t)
+# lambda_mc_min: 0.1
+lambda_mc_min: 0.0
+lambda_mc_max: 1.0
+# Per-step DC step size γ(t)
+gamma_dc_min: 0.0
+# gamma_dc_max: 0.25
+gamma_dc_max: 0.0
+dc_steps: 1
+# Cross-step consistency weight μ(t)
+mu_cons_min: 0.0
+# mu_cons_max: 0.2
+mu_cons_max: 0.0
+# Re-noise controls
+renoise_eta: 0.0       # 0 -> ODE-like deterministic mapping; >0 to explore
+lock_noise: true       # lock one epsilon across frames for coherence
+# Cross-step options
+# use_cross_mono: true   # penalize residual increase across steps
+use_cross_mono: false
+use_cross_align_xt: false  # optionally align current input to re-noised prev x0 at same t
+
+# DMD warmup (mute DMD for first N steps; keep consistency active)
+# dmd_warmup_steps: 1000
+# dmd_warmup_steps: 600
+dmd_warmup_steps: 0

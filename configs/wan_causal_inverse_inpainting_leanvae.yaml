@@ -1,0 +1,115 @@
+# Config for CausVid inverse problem training - Inpainting with LeanVAE
+model_name: wan
+generator_name: causal_wan
+# Start from scratch with LeanVAE 
+# generator_ckpt: "./checkpoints/autoregressive_checkpoint/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae/2025-10-23-01-41-19.347181_seed8919389/checkpoint_model_000300/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae/2025-10-23-04-09-49.385106_seed5911231/checkpoint_model_000600/model.pt"
+
+# Try from wan vae checkpoint
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting/2025-08-28-12-49-37.915997_seed5056140/checkpoint_model_001800/model.pt"
+
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae_from_wan_ckpt/2025-10-24-15-38-52.948448_seed1253243/checkpoint_model_001200/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae_from_wan_ckpt/2025-10-25-06-23-58.841800_seed4137357/checkpoint_model_000900/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae_from_wan_ckpt/2025-10-25-17-59-40.896235_seed5118367/checkpoint_model_001000/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae_from_wan_ckpt/2025-10-26-06-15-10.965820_seed9725339/checkpoint_model_000800/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae_from_wan_ckpt/2025-10-28-04-32-06.854949_seed8823821/checkpoint_model_000800/model.pt"
+# generator_ckpt: "./outputs/wan_causal_inverse_inpainting_leanvae_from_wan_ckpt/2025-10-29-16-41-50.226674_seed3724114/checkpoint_model_000400/model.pt"
+generator_ckpt: "./outputs/wan_causal_inverse_spatial_gaussian_leanvae/2025-11-02-15-04-56.666562_seed5205855/checkpoint_model_002000/model.pt"
+generator_fsdp_wrap_strategy: size
+real_score_fsdp_wrap_strategy: size
+fake_score_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+
+generator_grad:
+  model: true
+real_score_grad:
+  model: false
+fake_score_grad:
+  model: true
+
+denoising_step_list:
+- 1000
+- 757
+- 522
+- 0
+num_train_timestep: 1000
+timestep_shift: 8.0
+real_guidance_scale: 3.5
+
+generator_task: causal_video
+real_task_type: bidirectional_video
+fake_task_type: bidirectional_video
+denoising_loss_type: flow
+
+mixed_precision: true
+seed: 0
+
+wandb_host: WANDB_HOST
+wandb_key: WANDB_KEY
+wandb_entity: tyin
+wandb_project: causvid_inverse
+wandb_name: wan_causal_inverse_inpainting_leanvae
+
+sharding_strategy: no_shard
+optimizer: adamw
+# lr: 1.0e-05
+lr: 1.0e-04
+beta1: 0.9
+beta2: 0.999
+
+# dataset - using LeanVAE preprocessed LMDB
+data_path: "data/inpainting_leanvae_merged.lmdb"
+batch_size: 4
+log_iters: 200
+negative_prompt: 色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走
+
+dfake_gen_update_ratio: 5
+image_or_video_shape:
+- 1
+- 21
+- 16
+- 60
+- 104
+
+output_path: ./outputs/wan_causal_inverse_inpainting_leanvae_from_wan_ckpt
+
+# trainer
+distillation_loss: dmd
+gradient_checkpointing: true
+backward_simulation: false
+num_frame_per_block: 3
+warp_denoising_step: false
+compile_model: false
+
+# VAE settings
+vae_type: leanvae
+leanvae_ckpt_path: LeanVAE-master/LeanVAE-16ch_ckpt/LeanVAE-dim16.ckpt
+
+# inverse problem settings
+inverse_problem_type: inpainting
+mask_ratio: 0.5
+use_predegraded_dataset: true
+dmd_inpainting_masked_only: true
+
+# losses
+# measurement_consistency_weight: 1.0
+# measurement_consistency_weight: 1.5
+# measurement_consistency_weight: 0.3
+measurement_consistency_weight: 0.1
+
+# use_gt_consistency: true
+# use_gt_consistency: false
+use_gt_consistency: true
+
+# use gt consistency: false
+
+# dmd_warmup_steps: 500
+dmd_warmup_steps: 1000
+# dmd_warmup_steps: 0
+
+gradient_clip_norm: 1.0
+ema_decay: 0.999
+
+disable_latent_conversion: true # 启用latent转换（方案1的核心）
+
