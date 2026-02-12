@@ -1,10 +1,5 @@
-# InstantViR 复现指南（基于本仓库）
+# InstantViR 
 
-本 README 面向当前代码库中 `causvid`、`configs`、`minimal_inference` 三部分，给出一套可直接复现的 **训练 + 推理** 流程（含环境、数据、常见问题）。
-
-> 说明：这里的 “InstantViR” 对应你在本仓库里的 inverse/reconstruction 训练与推理管线（inpainting / deblur / SRx4），核心入口在 `causvid/train_distillation.py` 与 `minimal_inference/autoregressive_inverse_inference.py`。
-
----
 
 ## 1. 代码入口与目录
 
@@ -31,7 +26,7 @@
 在仓库根目录执行：
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 
 conda create -n causvid python=3.10 -y
 source /root/miniconda3/bin/activate causvid
@@ -41,13 +36,8 @@ pip install -r requirements.txt
 python setup.py develop
 ```
 
-建议检查：
 
-```bash
-python -c "import torch, causvid; print(torch.__version__)"
-```
-
-模型权重准备（至少）：
+模型权重准备：
 
 - Wan base 权重目录：`wan_models/Wan2.1-T2V-1.3B/`
 - 训练/推理 checkpoint（按 config 的 `generator_ckpt` 或命令行 `--checkpoint_folder`）
@@ -78,12 +68,11 @@ python -c "import torch, causvid; print(torch.__version__)"
 
 ## 4. 快速推理（已有 predegraded LMDB）
 
-以下是最常用复现命令模板。
 
 ### 4.1 WAN（inpainting / deblur / SRx4）
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 source /root/miniconda3/bin/activate causvid
 
 # Inpainting
@@ -117,7 +106,7 @@ CUDA_VISIBLE_DEVICES=0 python -m minimal_inference.autoregressive_inverse_infere
 ### 4.2 LeanVAE（inpainting / deblur / SRx4）
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 source /root/miniconda3/bin/activate causvid
 
 # Inpainting
@@ -148,7 +137,7 @@ CUDA_VISIBLE_DEVICES=0 python -m minimal_inference.autoregressive_inverse_infere
   --test_video_index 14
 ```
 
-推理输出通常包含：
+推理输出包含：
 
 - `reconstructed_val_XXX.mp4`
 - `original_val_XXX.mp4`
@@ -161,7 +150,7 @@ CUDA_VISIBLE_DEVICES=0 python -m minimal_inference.autoregressive_inverse_infere
 ### 5.1 单机多卡训练（推荐入口）
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 source /root/miniconda3/bin/activate causvid
 
 torchrun --nproc_per_node=4 -m causvid.train_distillation \
@@ -169,7 +158,7 @@ torchrun --nproc_per_node=4 -m causvid.train_distillation \
   --no_visualize
 ```
 
-换任务只需改 config，例如：
+换任务只需改 config（以及 data path），例如：
 
 - `configs/wan_causal_inverse_spatial_gaussian.yaml`
 - `configs/wan_causal_inverse_sr4.yaml`
@@ -192,7 +181,7 @@ torchrun --nproc_per_node=4 -m causvid.train_distillation \
 ### 5.3 ODE 预训练（可选）
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 source /root/miniconda3/bin/activate causvid
 
 torchrun --nproc_per_node=4 -m causvid.train_ode \
@@ -213,7 +202,7 @@ torchrun --nproc_per_node=4 -m causvid.train_ode \
 ### 6.1 单任务示例（SRx4）
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 source /root/miniconda3/bin/activate causvid
 
 CUDA_VISIBLE_DEVICES=0 python causvid/scripts/create_degraded_dataset.py \
@@ -229,7 +218,7 @@ CUDA_VISIBLE_DEVICES=0 python causvid/scripts/create_degraded_dataset.py \
 ### 6.2 LeanVAE 目标空间示例（WAN 源 -> LeanVAE）
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 source /root/miniconda3/bin/activate causvid
 
 CUDA_VISIBLE_DEVICES=0 python causvid/scripts/create_degraded_dataset.py \
@@ -246,7 +235,7 @@ CUDA_VISIBLE_DEVICES=0 python causvid/scripts/create_degraded_dataset.py \
 ### 6.3 多分片合并
 
 ```bash
-cd /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid
+cd /fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid
 source /root/miniconda3/bin/activate causvid
 
 python causvid/scripts/merge_lmdb_shards.py \
@@ -256,35 +245,11 @@ python causvid/scripts/merge_lmdb_shards.py \
 
 ---
 
-## 7. 结果评估（可选）
-
-如果你已导出为帧目录，可用：
-
-```bash
-python tools/metrics/compute_psnr_lpips_ssim_dirs.py \
-  --recon_dir <recon_frames_dir> \
-  --label_dir <gt_frames_dir> \
-  --device cuda:0 \
-  --save <metrics_txt>
-```
-
-FVD（及 SSIM）可用：
-
-```bash
-python tools/metrics/compute_ssim_fvd_dirs.py \
-  --recon_dir <recon_frames_dir> \
-  --label_dir <gt_frames_dir> \
-  --device cuda:0 \
-  --save <metrics_txt>
-```
-
----
-
-## 8. 常见问题排查
+## 7. 常见问题排查
 
 1) `ModuleNotFoundError: No module named 'causvid'`  
 请在仓库根目录执行，并先 `python setup.py develop`；必要时补充：  
-`export PYTHONPATH=/fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid:$PYTHONPATH`
+`export PYTHONPATH=/fs-computility-new/UPDZ02_sunhe/suzhexu/CausVid:$PYTHONPATH`
 
 2) 推理使用了错误数据集  
 确认命令行 `--data_path` 是否覆盖了 config 里的 `data_path`。  
@@ -295,20 +260,4 @@ python tools/metrics/compute_ssim_fvd_dirs.py \
 
 4) SRx4 分辨率不一致  
 `autoregressive_inverse_inference.py` 会根据 `clean_latent` 的实际尺寸对 SR 输入做上采样并重置缓存；仍建议保证训练/推理数据分辨率一致。
-
-5) 想看更详细调试信息  
-优先前台运行；必要时将 stdout/stderr 重定向到日志文件并实时 `tail -f`。
-
----
-
-## 9. 一页版最小复现顺序
-
-1. 准备环境（`conda + pip + setup.py develop`）  
-2. 准备模型权重（Wan/LeanVAE + 训练 ckpt）  
-3. 准备 predegraded LMDB（或直接用已有 LMDB）  
-4. `torchrun -m causvid.train_distillation --config_path ...` 训练  
-5. `python -m minimal_inference.autoregressive_inverse_inference ...` 推理  
-6. 用 `tools/metrics/*.py` 计算指标
-
-如果你只想快速跑通：直接从第 4 节命令开始（已有 LMDB + 已有 checkpoint）。
 
