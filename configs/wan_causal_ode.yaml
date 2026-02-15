@@ -14,7 +14,7 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid
+wandb_project: instantvir
 wandb_name: wan_causal_ode
 sharding_strategy: hybrid_full
 lr: 2.0e-06

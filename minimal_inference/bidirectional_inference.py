@@ -1,7 +1,7 @@
-from causvid.models.wan.bidirectional_inference import BidirectionalInferencePipeline
+from instantvir.models.wan.bidirectional_inference import BidirectionalInferencePipeline
 from huggingface_hub import hf_hub_download
 from diffusers.utils import export_to_video
-from causvid.data import TextDataset
+from instantvir.data import TextDataset
 from omegaconf import OmegaConf
 from tqdm import tqdm
 import argparse

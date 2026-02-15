@@ -32,7 +32,7 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid_inverse
+wandb_project: instantvir_inverse
 wandb_name: wan_causal_inverse_sr4_small
 
 sharding_strategy: no_shard
@@ -41,7 +41,7 @@ beta1: 0.9
 beta2: 0.999
 
 # 小样本预降质 SR×4 数据集 LMDB（合并后）
-data_path: /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/CausVid/data/sr4_small_merged.lmdb
+data_path: /fs-computility-new/UPDZ02_sunhe/weiminbai/suzhexu/InstantViR/data/sr4_small_merged.lmdb
 max_train_samples: 120
 batch_size: 2
 log_iters: 100

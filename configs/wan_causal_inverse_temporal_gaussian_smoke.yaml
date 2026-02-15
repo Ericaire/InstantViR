@@ -33,7 +33,7 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid_inverse
+wandb_project: instantvir_inverse
 wandb_name: wan_causal_inverse_temporal_gaussian_smoke
 
 sharding_strategy: no_shard
@@ -42,7 +42,7 @@ lr: 1.0e-05
 beta1: 0.9
 beta2: 0.999
 
-data_path: "/fs-computility/ai4sData/weiminbai/suzhe/CausVid/data/mixkit_latents_temporal_gaussian_k7_s1p0_lmdb"
+data_path: "/fs-computility/ai4sData/weiminbai/suzhe/InstantViR/data/mixkit_latents_temporal_gaussian_k7_s1p0_lmdb"
 batch_size: 2
 log_iters: 50
 negative_prompt: 色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走

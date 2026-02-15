@@ -1,6 +1,6 @@
-from causvid.models.wan.causal_inference import InferencePipeline
+from instantvir.models.wan.causal_inference import InferencePipeline
 from diffusers.utils import export_to_video
-from causvid.data import TextDataset
+from instantvir.data import TextDataset
 from omegaconf import OmegaConf
 from tqdm import tqdm
 import argparse
@@ -8,7 +8,7 @@ import torch
 import os
 
 # Import video operators for inverse problems
-from causvid.models.wan.video_operators import (
+from instantvir.models.wan.video_operators import (
     temporal_blur_latent, add_noise_latent
 )
 

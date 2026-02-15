@@ -29,7 +29,7 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid_inverse
+wandb_project: instantvir_inverse
 wandb_name: wan_causal_inverse_spatial_gaussian
 sharding_strategy: no_shard
 lr: 5.0e-06
@@ -74,6 +74,6 @@ gt_consistency_space: latent  # latent | pixel
 
 # The video features an individual in an indoor setting with green-tinted lighting, exhibiting a moody ambiance. Initially, the person faces the camera. As the video progresses, the individual turns their head away from the camera, adopting a more pensive or contemplative demeanor. Throughout the sequence, the background remains consistent, featuring a framed picture on the wall and a window with decorative bars. The dim lighting casts shadows across the scene, maintaining the overall moody atmosphere.
 
-# torchrun --nproc_per_node=2 -m causvid.train_distillation \   --config_path configs/wan_causal_inverse_spatial_gaussian.yaml \   --no_visualize 
+# torchrun --nproc_per_node=2 -m instantvir.train_distillation \   --config_path configs/wan_causal_inverse_spatial_gaussian.yaml \   --no_visualize 
 
-# python minimal_inference/autoregressive_inverse_inference.py \   --config_path configs/wan_causal_inverse_spatial_gaussian.yaml \   --checkpoint_folder ./outputs/wan_causal_inverse_spatial_gaussian/xxxx/checkpoint_model_000800 \   --output_folder ./outputs/infer_spatial_blur_test \   --test_video_index 0 \   --data_path /fs-computility/ai4sData/weiminbai/suzhe/CausVid/data/mixkit_latents_spatial_blur_k61_s3_lmdb \   --use_predegraded_dataset 
+# python minimal_inference/autoregressive_inverse_inference.py \   --config_path configs/wan_causal_inverse_spatial_gaussian.yaml \   --checkpoint_folder ./outputs/wan_causal_inverse_spatial_gaussian/xxxx/checkpoint_model_000800 \   --output_folder ./outputs/infer_spatial_blur_test \   --test_video_index 0 \   --data_path /fs-computility/ai4sData/weiminbai/suzhe/InstantViR/data/mixkit_latents_spatial_blur_k61_s3_lmdb \   --use_predegraded_dataset 

@@ -31,7 +31,7 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid_inverse
+wandb_project: instantvir_inverse
 wandb_name: wan_causal_inverse_temporal_uniform_k13
 
 sharding_strategy: no_shard

@@ -1,6 +1,6 @@
-from causvid.models.wan.causal_inference import InferencePipeline
+from instantvir.models.wan.causal_inference import InferencePipeline
 from diffusers.utils import export_to_video
-from causvid.data import TextDataset, InverseProblemLMDBDataset, PredegradedLMDBDataset # Import new dataset
+from instantvir.data import TextDataset, InverseProblemLMDBDataset, PredegradedLMDBDataset # Import new dataset
 from omegaconf import OmegaConf
 from tqdm import tqdm
 import argparse
@@ -14,10 +14,10 @@ import torch.nn.functional as F
 _program_start_time = time.time()
 
 # Import video operators for inverse problems
-from causvid.models.wan.video_operators import (
+from instantvir.models.wan.video_operators import (
     temporal_blur_latent, add_noise_latent
 )
-from causvid.models.wan.wan_wrapper import WanVAEWrapper
+from instantvir.models.wan.wan_wrapper import WanVAEWrapper
 
 # Extend InferencePipeline to support inverse problems
 class InverseProblemPipeline(InferencePipeline):
@@ -562,7 +562,7 @@ else:
             
             # Apply degradation based on config
             if config.inverse_problem_type == "spatial_blur":
-                from causvid.models.wan.video_operators import spatial_blur_latent
+                from instantvir.models.wan.video_operators import spatial_blur_latent
                 degraded_observation = spatial_blur_latent(clean_latent, kernel_size_s=args.blur_kernel_size, sigma_s=args.blur_sigma)
             else: # Default to temporal
                 degraded_observation = temporal_blur_latent(clean_latent, kernel_size_t=args.blur_kernel_size)

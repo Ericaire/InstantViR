@@ -18,13 +18,13 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid
+wandb_project: instantvir
 wandb_name: wan_causal_ode_leanvae
 sharding_strategy: hybrid_full
 lr: 2.0e-06
 beta1: 0.9
 beta2: 0.999
-data_path: /fs-computility-new/UPDZ02_sunhe/weiminbai/dataset/causvid_ode_lean
+data_path: /fs-computility-new/UPDZ02_sunhe/weiminbai/dataset/instantvir_ode_lean
 batch_size: 2
 log_iters: 1000
 output_path: ./outputs/wan_causal_ode_leanvae

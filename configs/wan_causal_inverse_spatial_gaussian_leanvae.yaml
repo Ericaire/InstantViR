@@ -1,4 +1,4 @@
-# Config for CausVid inverse problem training - Spatial Gaussian Blur with LeanVAE
+# Config for InstantViR inverse problem training - Spatial Gaussian Blur with LeanVAE
 model_name: wan
 generator_name: causal_wan
 # Start from pretrained checkpoint
@@ -41,7 +41,7 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid_inverse
+wandb_project: instantvir_inverse
 wandb_name: wan_causal_inverse_spatial_gaussian_leanvae
 
 sharding_strategy: no_shard

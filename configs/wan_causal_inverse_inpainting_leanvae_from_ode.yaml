@@ -36,7 +36,7 @@ seed: 0
 wandb_host: WANDB_HOST
 wandb_key: WANDB_KEY
 wandb_entity: tyin
-wandb_project: causvid_inverse
+wandb_project: instantvir_inverse
 wandb_name: wan_causal_inverse_inpainting_leanvae_from_ode
 
 sharding_strategy: no_shard
@@ -46,7 +46,7 @@ beta1: 0.9
 beta2: 0.999
 
 # Use LeanVAE-converted ODE LMDB as the clean latent source
-data_path: "/fs-computility-new/UPDZ02_sunhe/weiminbai/dataset/causvid_ode_lean"
+data_path: "/fs-computility-new/UPDZ02_sunhe/weiminbai/dataset/instantvir_ode_lean"
 batch_size: 4
 log_iters: 200
 
