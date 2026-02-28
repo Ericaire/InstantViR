@@ -1,5 +1,33 @@
 
-# InstantViR: Real-Time Video Inverse Problem Solver with Distilled Diffusion Prior
+<div align="center">
+
+<h1>⚡ InstantViR</h1>
+
+<h3>Real-Time Video Inverse Problem Solver with Distilled Diffusion Prior</h3>
+
+<p>
+Weimin Bai<sup>1</sup>, Suzhe Xu<sup>2</sup>, Yiwei Ren<sup>1</sup>, Jinhua Hao<sup>3</sup>, Ming Sun<sup>3</sup>,  
+Wenzheng Chen<sup>1</sup>†, He Sun<sup>1</sup>†
+</p>
+
+<p>
+  <a href="https://ai4scientificimaging.org/instantvir/">
+    <img src="https://img.shields.io/badge/Project-Page-green" />
+  </a>
+  <a href="https://arxiv.org/abs/2511.14208">
+    <img src="https://img.shields.io/badge/arXiv-2511.14208-b31b1b.svg" />
+  </a>
+  <a href="https://ai4scientificimaging.org/instantvir/#qualitative-results">
+    <img src="https://img.shields.io/badge/Watch-Demos-orange" />
+  </a>
+  <a href="#citation">
+    <img src="https://img.shields.io/badge/Cite-BibTeX-blue" />
+  </a>
+</p>
+
+<img src="assets/teaser.png" width="900" />
+
+</div>
 
 **InstantViR** is an amortized, **causal** video inverse-problem solver distilled from a powerful video diffusion prior,
 enabling **streaming** **inpainting**, **deblurring**, and **4× super-resolution** at **real-time speed** (e.g., **>35 FPS @ 832×480 on A100**).
