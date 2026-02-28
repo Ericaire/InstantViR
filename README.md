@@ -25,7 +25,7 @@ Wenzheng Chen<sup>1</sup>†, He Sun<sup>1</sup>†
   </a>
 </p>
 
-<img src="assets/teaser.png" width="900" />
+<img src="teaser.svg" width="900" />
 
 </div>
 
