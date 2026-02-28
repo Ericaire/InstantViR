@@ -32,10 +32,6 @@ Wenzheng Chen<sup>1</sup>†, He Sun<sup>1</sup>†
 **InstantViR** is an amortized, **causal** video inverse-problem solver distilled from a powerful video diffusion prior,
 enabling **streaming** **inpainting**, **deblurring**, and **4× super-resolution** at **real-time speed** (e.g., **>35 FPS @ 832×480 on A100**).
 
-- **Project Page:** https://ai4scientificimaging.org/instantvir/
-- **Paper (arXiv):** https://arxiv.org/abs/2511.14208
-- **Demos:** also see the project page
-
 > We distill a bidirectional video diffusion teacher into a **single-step** causal autoregressive student.
 > Training requires only the **frozen diffusion prior** + **known degradation operators** (no paired clean/noisy video data).
 
