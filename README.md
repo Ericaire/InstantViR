@@ -132,7 +132,8 @@ Inverse-problem training/inference typically uses type 2:
 `--test_video_index` refers to the **index in the val split**.
 
 ---
-
+> Checkpoints and predegraded LMDB data can be downloaded from https://drive.google.com/drive/folders/1TMAIPmuGhwiaR4MtQdnHZwlrAbz3qPNa?usp=sharing
+---
 ## Quick Inference (with Existing predegraded LMDB)
 
 ### WAN (inpainting / deblur / SR×4)
