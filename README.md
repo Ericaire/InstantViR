@@ -131,6 +131,75 @@ Inverse-problem training/inference typically uses type 2:
 `minimal_inference/autoregressive_inverse_inference.py` splits `data_path` into train/val with default **9:1** ratio (fixed `seed=42`).
 `--test_video_index` refers to the **index in the val split**.
 
+## Unified inference (released models and supervised SR4 v2)
+
+All three tasks can use `python -m minimal_inference.infer --task ...`.
+The task determines the default legacy config; checkpoint families retain their own
+preprocessing. Existing `autoregressive_inverse_inference` commands remain valid.
+
+### Supervised SR4 v2: a low-resolution video
+
+Run from the repository root in the existing CUDA/Wan environment (PyTorch with
+BF16/FlashAttention support, imageio, imageio-ffmpeg, numpy and the Wan dependencies).
+Place the base Wan files under `wan_models/Wan2.1-T2V-1.3B/`, as above.
+Use `best_ema.pt` or `final_ema.pt` with format `sr4_gt_v2_hr_bicubic_encoded`;
+training-state `latest.pt` and released `model.pt` are not the inference exports.
+Weights are distributed separately, not committed to Git.
+
+```bash
+CUDA_VISIBLE_DEVICES=3 python -m minimal_inference.infer \
+  --task sr4 --input low_resolution.mp4 \
+  --checkpoint checkpoints/sr4_v2/best_ema.pt \
+  --output outputs/restored.mp4
+```
+
+The input must be the **LR** video, with width/height divisible by 4. Output is 4x
+larger with the same frame count and FPS. The last frame is repeated internally
+when padding to 4n+1 frames is needed, and padding is removed before export. Audio
+is not copied. This implementation reads the clip into memory and retains KV
+history; it is intended for short clips, not unbounded video streams.
+
+The v2 contract is pixel-space Bicubic x4 **before** Wan encoding, `(z-mean)/std`
+normalization, FP16 latent rounding, empty text, BF16 generator autocast, t=522,
+and three latent frames per causal block. The released SR pipeline instead
+upsamples LR latents. Do not interchange their preprocessing or checkpoints.
+The normalization used by legacy tasks is deliberately unchanged in this patch.
+
+By default the empty text embedding is generated using the base Wan T5 model.
+Optionally pass `--prompt-cache empty_prompt.pt` containing the empty Wan embedding
+(a finite tensor of shape `[1,512,4096]`) to avoid loading T5. Use only a matching
+empty-prompt cache; custom text was not used for this supervised model.
+`minimal_inference.infer_sr4_gt` remains available as a compatibility entry point.
+Neither v2 entry point imports the trainer, LPIPS, TensorBoard, or LMDB.
+The new weights were supervised with VAE-reconstructed GT; they are a separate
+checkpoint family from the paper's diffusion-prior distillation models.
+
+### Released inpainting, Gaussian deblur, and SR4: LMDB input
+
+```bash
+python -m minimal_inference.infer --task inpainting \
+  --checkpoint_folder checkpoints/inpainting \
+  --data_path data/inpainting.lmdb --use_predegraded_dataset \
+  --test_video_index 14 --output_folder outputs/inpainting
+
+python -m minimal_inference.infer --task gaussian-deblur \
+  --checkpoint_folder checkpoints/deblur \
+  --data_path data/spatial_blur.lmdb --use_predegraded_dataset \
+  --test_video_index 14 --output_folder outputs/deblur
+
+python -m minimal_inference.infer --task sr4 \
+  --checkpoint_folder checkpoints/released_sr4 \
+  --data_path data/sr4.lmdb --use_predegraded_dataset \
+  --test_video_index 14 --output_folder outputs/released_sr4
+```
+
+These modes forward the existing LMDB options unchanged. For LeanVAE or another
+compatible config, also pass `--config_path`; it must match `--task`. Raw-video
+mode is currently SR4 v2 only. Inpainting and deblur retain their existing LMDB
+interface rather than guessing masks or degradation settings.
+
+Routing tests: `python -m unittest minimal_inference.test_infer_cli`.
+
 ## Quick Inference (with Existing predegraded LMDB)
 
 ### WAN (inpainting / deblur / SR×4)
